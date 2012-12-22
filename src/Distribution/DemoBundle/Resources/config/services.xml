@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    
+    <parameters>
+        <parameter key="demo.admin.demo.class">Distribution\DemoBundle\Admin\DemoAdmin</parameter>
+        <parameter key="demo.admin.demo">Distribution\DemoBundle\Entity\Demo</parameter>
+    </parameters>
+
+    <services>
+        <service id="demo.admin" class="%demo.admin.demo.class%">
+            <tag name="sonata.admin" manager_type="orm" group="Demo" label="Demo" />
+            <argument />
+            <argument>%demo.admin.demo%</argument>
+            <argument />
+        </service>
+    </services>
+    
+</container>

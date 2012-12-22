@@ -1,0 +1,29 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+<h3>Small thumbnail of the media</h3>
+{% thumbnail mymedia, 'small' %}
+<hr />
+
+<h3>Big thumbnail of the media</h3>
+{% thumbnail mymedia, 'big' %}
+<hr />
+
+<h3>Small media</h3>
+{% media mymedia, 'small' %}
+<hr />
+
+<h3>Big media</h3>
+{% media mymedia, 'big' %}
+<hr />
+
+<h3>Path to the small media</h3>
+{% path mymedia, 'small' %}
+<hr />
+
+<h3>Path to the big media</h3>
+{% path mymedia, 'big' %}
+<hr />
+
+{% endblock %}

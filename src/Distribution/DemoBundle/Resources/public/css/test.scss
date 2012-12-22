@@ -1,0 +1,7 @@
+$blockHeight: 150px;
+$blockMarginTop: 10px;
+$blockMarginBottom: 10px;
+
+@for $i from 1 through 6 {
+  .blocks_Xx#{$i} { height: 1px * ($blockHeight+$blockMarginTop+$blockMarginBottom) * $i; }
+}

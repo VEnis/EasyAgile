@@ -1,0 +1,16 @@
+default:
+    extensions:
+        Behat\Symfony2Extension\Extension: ~
+        Behat\MinkExtension\Extension:
+            #sahi: ~
+            goutte: ~
+            selenium2: ~
+            #javascript_session: "sahi"
+            base_url:  'http://localhost/dfn-symfony-distribution/web/'
+            browser_name: 'chrome'
+        VIPSoft\DoctrineDataFixturesExtension\Extension:
+            autoload:    true
+    paths:
+        features: app\features
+    context:
+        class:  Behat\Context\DistributionContext

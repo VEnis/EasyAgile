@@ -1,0 +1,79 @@
+fos_user:
+   db_driver: orm
+   firewall_name: main
+   user_class: Application\Sonata\UserBundle\Entity\User
+
+sonata_admin:
+   title: Set Your Admin Title Here
+   #title_logo:
+
+sonata_block:
+   default_contexts: [cms]
+   blocks:
+      sonata.admin.block.admin_list:
+          contexts:   [admin]
+
+      sonata.block.service.text:
+      sonata.block.service.action:
+      sonata.block.service.rss:
+
+      sonata.media.block.media:
+      sonata.media.block.gallery:
+      sonata.media.block.feature_media:
+
+doctrine:
+    dbal:
+        types:
+            json: Sonata\Doctrine\Types\JsonType
+
+sonata_media:
+    default_context: default
+    db_driver: doctrine_orm # or doctrine_mongodb
+    contexts:
+        default:  # the default context is mandatory
+            providers:
+                - sonata.media.provider.dailymotion
+                - sonata.media.provider.youtube
+                - sonata.media.provider.image
+                - sonata.media.provider.file
+                - sonata.media.provider.vimeo
+
+            formats:
+                small: { width: 100 , quality: 70}
+                big:   { width: 500 , quality: 70}
+
+    cdn:
+        server:
+            path: /media # http://media.sonata-project.org/ or /subdir/media if Your project is not in the server root
+
+    filesystem:
+        local:
+            directory:  %kernel.root_dir%/../web/media
+            create:     false
+
+
+services:
+    twig:
+        class: %twig.class%
+        arguments: [@difane.bundle.twigdatabase.twig.loader.chain,%twig.options%]
+
+sonata_formatter:
+    formatters:
+        markdown:
+            service: sonata.formatter.text.markdown
+            extensions: []
+
+        text:
+            service: sonata.formatter.text.text
+            extensions: []
+
+        raw:
+            service: sonata.formatter.text.raw
+            extensions: []
+
+        twig:
+            service: sonata.formatter.text.twigengine
+            extensions: []
+
+sonata_user:
+  impersonating_route:    distribution_demo_default_index
