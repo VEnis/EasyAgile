@@ -27,9 +27,7 @@
                                 <li><a href="{{ path('application_site_site_about') }}">About</a></li>
                             </ul>
                             <ul class="nav pull-right">
-                                <li><a href="{{ path('fos_user_registration_register') }}">Sign Up Now</a></li>
-                                <li class="divider-vertical"></li>
-                                <li><a href="{{ path('fos_user_security_login') }}">Sign In</a></li>
+                                {% include '::userbar.html.twig' %}
                             </ul>
 
                         </div><!--/.nav-collapse -->

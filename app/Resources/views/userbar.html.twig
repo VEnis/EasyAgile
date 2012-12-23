@@ -1,0 +1,8 @@
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <li><p class="navbar-text">{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |</p></li>
+    <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
+{% else %}
+    <li><a href="{{ path('fos_user_registration_register') }}">Sign Up Now</a></li>
+    <li class="divider-vertical"></li>
+    <li><a href="{{ path('fos_user_security_login') }}">Sign In</a></li>
+{% endif %}
