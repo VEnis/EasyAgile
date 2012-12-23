@@ -45,7 +45,7 @@ class AppKernel extends Kernel
             new Application\SiteBundle\ApplicationSiteBundle(),
             
             // This demo bundle can be safely removed
-            new Distribution\DemoBundle\DistributionDemoBundle(),
+            //new Distribution\DemoBundle\DistributionDemoBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
