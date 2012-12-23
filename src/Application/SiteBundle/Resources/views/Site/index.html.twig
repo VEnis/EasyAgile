@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div class="hero-unit">
+    <h1>Agile is easy!</h1>
+    <p>The right people in the right place doing the right things, can not fail.</p>
+    <p><a class="btn btn-primary btn-large" href="{{ path('application_site_site_about') }}">Learn more &raquo;</a></p>
+</div>
+
+<!-- Example row of columns -->
+<div class="row">
+    <div class="span4">
+        <h2>Planning poker automation</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="{{ path('application_site_site_about') }}">View details &raquo;</a></p>
+    </div>
+    <div class="span4">
+        <h2>Daily scrum meeting helper</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="{{ path('application_site_site_about') }}">View details &raquo;</a></p>
+    </div>
+    <div class="span4">
+        <h2>Wallboard mode</h2>
+        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p><a class="btn" href="{{ path('application_site_site_about') }}">View details &raquo;</a></p>
+    </div>
+</div>
+{% endblock %}
