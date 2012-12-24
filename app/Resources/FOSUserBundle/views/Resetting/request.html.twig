@@ -35,20 +35,17 @@
 
     </style>
 
-    <form action="{{ path("fos_user_security_check") }}" method="post" class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        {% if error %}
-            <div class="alert alert-error">{{ error|trans({}, 'FOSUserBundle') }}</div>
+<form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="form-signin">
+    <h2 class="form-signin-heading">Password resetting</h2>
+    <div>
+        {% if invalid_username is defined %}
+            <div class="alert alert-error">{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</div>
         {% endif %}
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-
-        <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="input-block-level" placeholder="Login" />
-        <input type="password" id="password" name="_password" required="required"  class="input-block-level" placeholder="Password" />
-
-        <label class="checkbox">
-            <input type="checkbox" id="remember_me" name="_remember_me" value="on" /> Remember me
-        </label>
-        <button class="btn btn-primary" type="submit" id="_submit" name="_submit">Sign in</button>
-        <a href="{{ path('fos_user_resetting_request') }}" class="btn">Forgot Password?</a>
-    </form>
+        <label for="username">{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}</label>
+        <input type="text" id="username" name="username" required="required" />
+    </div>
+    <div>
+        <button class="btn btn-primary" type="submit" id="_submit" name="_submit">{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}</button>
+    </div>
+</form>
 {% endblock %}
