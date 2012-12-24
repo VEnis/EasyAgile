@@ -46,6 +46,7 @@ class AppKernel extends Kernel
             
             // This demo bundle can be safely removed
             //new Distribution\DemoBundle\DistributionDemoBundle(),
+            new Application\PlanningPokerBundle\ApplicationPlanningPokerBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
