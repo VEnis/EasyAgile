@@ -2,6 +2,9 @@ fos_user:
    db_driver: orm
    firewall_name: main
    user_class: Application\Sonata\UserBundle\Entity\User
+   registration:
+       form:
+           type: application_user_registration_type
 
 sonata_admin:
    title: Set Your Admin Title Here

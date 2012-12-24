@@ -44,7 +44,8 @@ class Invitation
     /**
      * @var User
      *
-     * @ORM\OneToOne(targetEntity="User", mappedBy="invitation", cascade={"persist", "merge"})
+     * @ORM\OneToOne(targetEntity="User", inversedBy="invitation")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     protected $user;
 

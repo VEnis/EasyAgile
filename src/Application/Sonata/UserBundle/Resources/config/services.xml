@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="application.user.registration.type" class="Application\Sonata\UserBundle\Form\Type\RegistrationFormType">
+            <argument>%fos_user.model.user.class%</argument>
+            <tag name="form.type" alias="application_user_registration_type" />
+        </service>
+
+        <service id="application.user.invitation.type" class="Application\Sonata\UserBundle\Form\Type\InvitationFormType">
+            <argument type="service" id="application.user.invitation.form.data_transformer"/>
+            <tag name="form.type" alias="application_user_invitation_type" />
+        </service>
+
+        <service id="application.user.invitation.form.data_transformer" class="Application\Sonata\UserBundle\Form\DataTransformer\InvitationToCodeTransformer">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+        </service>
+
+
+    </services>
+</container>
