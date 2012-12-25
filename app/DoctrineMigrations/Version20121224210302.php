@@ -17,7 +17,6 @@ class Version20121224210302 extends AbstractMigration
         
         $this->addSql("CREATE TABLE invitation (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(6) NOT NULL, email VARCHAR(255) NOT NULL, sent TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_F11D61A277153098 (code), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
         $this->addSql("DROP TABLE distribution_demo");
-        $this->addSql("DROP TABLE distribution_demo");
         $this->addSql("DROP TABLE distribution_demo_audit");
         $this->addSql("ALTER TABLE notification__message CHANGE body body LONGTEXT NOT NULL COMMENT '(DC2Type:json)'");
         $this->addSql("ALTER TABLE media__media CHANGE provider_metadata provider_metadata LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json)'");
