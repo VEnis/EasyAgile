@@ -1,7 +1,7 @@
 application_planning_poker:
     resource: "@ApplicationPlanningPokerBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /poker
 
 # Internal routing configuration to handle ESI
 #_internal:
