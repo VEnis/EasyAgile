@@ -28,7 +28,7 @@ class LoadDefaultUsers implements FixtureInterface, ContainerAwareInterface
     {
         $this->manager = $manager;
 
-        $this->createUser("VEnis", "MyDatacom_Passwd!", "venis@difane.com", true, true);
+        $this->createUser("VEnis", "123123", "venis@luxoft.com", true, true);
 
         $this->manager->flush();
     }
