@@ -84,4 +84,4 @@ sonata_formatter:
             extensions: []
 
 sonata_user:
-  impersonating_route:    distribution_demo_default_index
+  impersonating_route:    application_site_site_index
