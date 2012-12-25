@@ -20,10 +20,11 @@ class Invitation
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
+
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", unique=true, length=6)
+     * @ORM\Column(name="code", type="string", length=6, nullable=false)
      */
     private $code;
 
@@ -39,13 +40,12 @@ class Invitation
      *
      * @ORM\Column(name="sent", type="boolean")
      */
-    private $sent;
+    private $sent = false;
 
     /**
      * @var User
      *
-     * @ORM\OneToOne(targetEntity="User", inversedBy="invitation")
-     * @ORM\JoinColumn(referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="User", mappedBy="invitation", cascade={"persist", "merge"})
      */
     protected $user;
 

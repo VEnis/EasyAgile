@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class InvitationRepository extends EntityRepository
 {
+    public function findUnusedInvitationByCode($code)
+    {
+        $invitation = $this->findOneByCode($code);
+        if(false == is_null($invitation))
+        {
+            if (is_null($invitation->getUser()))
+            {
+                return $invitation;
+            }
+        }
+        return null;
+    }
 }

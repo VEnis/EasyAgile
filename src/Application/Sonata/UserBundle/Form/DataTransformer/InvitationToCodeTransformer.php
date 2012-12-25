@@ -44,9 +44,6 @@ class InvitationToCodeTransformer implements DataTransformerInterface
 
         return $this->entityManager
             ->getRepository('Application\Sonata\UserBundle\Entity\Invitation')
-            ->findOneBy(array(
-                'code' => $value,
-                'user' => null,
-            ));
+            ->findUnusedInvitationByCode($value);
     }
 }

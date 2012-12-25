@@ -26,7 +26,8 @@ class User extends BaseUser
     /**
      * @var Invitation
      *
-     * @ORM\OneToOne(targetEntity="Invitation", mappedBy="user", cascade={"persist", "merge"})
+     * @ORM\OneToOne(targetEntity="Invitation", inversedBy="user")
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=false)
      * @Assert\NotNull(message="Your invitation is wrong")
      */
     protected $invitation;
