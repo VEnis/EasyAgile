@@ -22,10 +22,7 @@
                         </a>
                         <a class="brand" href="{{ path('application_site_site_index') }}">EasyAgile</a>
                         <div class="nav-collapse collapse">
-                            <ul class="nav">
-                                <li class="active"><a href="{{ path('application_site_site_index') }}">Home</a></li>
-                                <li><a href="{{ path('application_site_site_about') }}">About</a></li>
-                            </ul>
+                            {{ knp_menu_render('ApplicationSiteBundle:Builder:mainMenu', {'currentClass': 'active'}) }}
                             <ul class="nav pull-right">
                                 {% include '::userbar.html.twig' %}
                             </ul>
