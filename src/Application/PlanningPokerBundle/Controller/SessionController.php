@@ -11,6 +11,7 @@ use Application\PlanningPokerBundle\Entity\Session;
 use Application\PlanningPokerBundle\Form\SessionType;
 
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
+use Application\PlanningPokerBundle\Form\SessionInvitePeopleType;
 
 /**
  * Session controller.
@@ -89,6 +90,7 @@ class SessionController extends Controller
         $form->bind($request);
 
         if ($form->isValid()) {
+            $entity->addPeople($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
@@ -178,5 +180,41 @@ class SessionController extends Controller
         $em->flush();
 
         return $this->redirect($this->generateUrl('poker_session'));
+    }
+
+    /**
+     * Invites peoples to session
+     *
+     * @Route("/{id}/invite", name="poker_session_invite")
+     * @Template()
+     */
+    public function inviteAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        $inviteForm = $this->createForm(new SessionInvitePeopleType(), $entity);
+
+        return array(
+            'entity'      => $entity,
+            'invite_form'   => $inviteForm->createView()
+        );
+    }
+
+    /**
+     * Processes peoples invitation
+     *
+     * @Route("/{id}/invite-process", name="poker_session_invite_process")
+     * @Method("POST")
+     * @Template("ApplicationPlanningPokerBundle:Session:invite.html.twig")
+     */
+    public function inviteProcessAction(Request $request, $id)
+    {
+
     }
 }
