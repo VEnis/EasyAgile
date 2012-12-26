@@ -73,26 +73,18 @@
             <thead>
             <tr>
                 <th>Name</th>
-                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             {% for people in entity.peoples %}
                 <tr>
                     <td>{{ people.username }}</td>
-                    <td>
-                        <div class="btn-toolbar">
-                            <div class="btn-group">
-                                <a class="btn btn-danger" href="#">Remove</a>
-                            </div>
-                        </div>
-                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
         <a class="btn btn-primary" href="{{ path('poker_session_invite', {'id': entity.id}) }}">
-            Invite someone to this session
+            Change users
         </a>
     </div>
 </div>

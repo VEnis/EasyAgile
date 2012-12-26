@@ -215,6 +215,27 @@ class SessionController extends Controller
      */
     public function inviteProcessAction(Request $request, $id)
     {
+        $em = $this->getDoctrine()->getManager();
 
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        $inviteForm = $this->createForm(new SessionInvitePeopleType(), $entity);
+        $inviteForm->bind($request);
+
+        if ($inviteForm->isValid()) {
+            $em->persist($entity);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+        }
+
+        return array(
+            'entity'      => $entity,
+            'invite_form'   => $inviteForm->createView()
+        );
     }
 }

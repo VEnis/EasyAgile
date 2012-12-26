@@ -1,13 +1,110 @@
 {% extends "::base.html.twig" %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('select2-release-3.2/select2.css') }}" rel="stylesheet" />
+    {{ form_stylesheet(invite_form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('select2-release-3.2/select2.min.js') }}"></script>
+    {{ form_javascript(invite_form) }}
+{% endblock %}
+
+{% form_theme invite_form _self %}
+
+{% block form_row %}
+    <div class="form_row">
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endblock form_row %}
+
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            {% for error in errors %}
+                <div class="alert alert-error">{{
+                    error.messagePluralization is null
+                    ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                    : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+                    }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}
+
 {% block body %}
     <h3>Invite peoples</h3>
 
     <form action="{{ path('poker_session_invite_process', { 'id': entity.id }) }}" method="post" {{ form_enctype(invite_form) }}>
         {{ form_widget(invite_form) }}
+        <hr>
+        <a href="#" id="add-another-people" class="btn">Add a user</a>
+        <hr>
         <p>
             <button type="submit" class="btn btn-primary">Save</button> or
             <a class="btn" href="{{ path('poker_session_show', { 'id': entity.id }) }}">Cancel and back to the session</a>
         </p>
     </form>
+
+    <script type="text/javascript">
+        function triggerJavascript(id)
+        {
+            $field = $('#' + id);
+
+            {{ form_javascript(invite_form.peoples.vars.prototype, true) }}
+        }
+
+        function addDeleteLink(newLi)
+        {
+            var $removeFormA = $('<a href="#" class="btn btn-small btn-danger">Delete this user</a>');
+            newLi.append($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // remove the li for the tag form
+                newLi.remove();
+            });
+        }
+
+        // keep track of how many fields have been rendered
+        var peopleCount = '{{ invite_form.peoples | length }}';
+
+        jQuery(document).ready(function() {
+            var $elements = jQuery('#application_planningpokerbundle_sessioninvitepeopletype_peoples');
+
+            $elements.children('div').each(function() {
+                //alert("A");
+                addDeleteLink($(this));
+            });
+
+            jQuery('#add-another-people').click(function() {
+                // grab the prototype template
+                var newWidget = $elements.attr('data-prototype');
+                // replace the "__name__" used in the id and name of the prototype
+                // with a number that's unique to your emails
+                // end name attribute looks like name="contact[emails][2]"
+                newWidget = newWidget.replace(/__name__/g, peopleCount);
+
+
+                // create a new list element and add it to the list
+                var newLi = jQuery(newWidget);
+                newLi.appendTo(jQuery('#application_planningpokerbundle_sessioninvitepeopletype_peoples'));
+                addDeleteLink(newLi);
+
+                // Dynamically add the form and get its id
+                var id = '{{ invite_form.peoples.vars.id }}_' + peopleCount;
+
+                // Once HTML has been added, let's trigger the javascript on it
+                triggerJavascript(id);
+
+                peopleCount++;
+                return false;
+            });
+        })
+    </script>
 {% endblock %}

@@ -11,7 +11,17 @@ class SessionInvitePeopleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
+            ->add('peoples', 'collection', array(
+                'type' => 'genemu_jqueryselect2_entity',
+                'options' => array(
+                    'class' => 'ApplicationSonataUserBundle:User',
+                    'property' => 'username'
+                ),
+                'allow_add' => true,
+                'allow_delete' => true,
+                'label' => null,
+                'by_reference' => false
+            ))
         ;
     }
 
