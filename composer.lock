@@ -1,5 +1,5 @@
 {
-    "hash": "563b4d221d0c46d078ed081b3e8722d2",
+    "hash": "cd1f9166687923701e38bfe5576db834",
     "packages": [
         {
             "name": "behat/behat",
@@ -1383,6 +1383,73 @@
                 "nestedset",
                 "sortable",
                 "timestampable"
+            ]
+        },
+        {
+            "name": "genemu/form-bundle",
+            "version": "2.1.x-dev",
+            "target-dir": "Genemu/Bundle/FormBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/genemu/GenemuFormBundle.git",
+                "reference": "3e98e9edbe5a1a8063acdfbba7a7b084bea39bf5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/genemu/GenemuFormBundle/archive/3e98e9edbe5a1a8063acdfbba7a7b084bea39bf5.zip",
+                "reference": "3e98e9edbe5a1a8063acdfbba7a7b084bea39bf5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": ">=2.1,<2.3-dev",
+                "symfony/form": ">=2.1,<2.3-dev"
+            },
+            "require-dev": {
+                "symfony/finder": "2.*",
+                "doctrine/orm": "2.*",
+                "doctrine/doctrine-bundle": "1.*",
+                "doctrine/mongodb-odm-bundle": "*",
+                "propel/propel-bundle": "*"
+            },
+            "suggest": {
+                "symfony/twig-bridge": "2.*",
+                "symfony/doctrine-bundle": "1.*",
+                "symfony/finder": "2.*",
+                "symfony/mongodb-odm-bundle": "2.*",
+                "propel/propel-bundle": "*"
+            },
+            "time": "2012-11-25 11:27:05",
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Genemu\\Bundle\\FormBundle": ""
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Olivier Chauvel",
+                    "email": "olivier@generation-multiple.com"
+                },
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/genemu/GenemuFormBundle/contributors"
+                }
+            ],
+            "description": "Extra Form",
+            "keywords": [
+                "form",
+                "extra form"
             ]
         },
         {

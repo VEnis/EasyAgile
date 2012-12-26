@@ -34,6 +34,7 @@
         "leafo/scssphp": "dev-master",
         "leafo/lessphp": "dev-master",
         "stof/doctrine-extensions-bundle": "dev-master",
+        "genemu/form-bundle": "2.1.*",
 
         "behat/symfony2-extension": "dev-master",
         "behat/mink-extension": "dev-master",
