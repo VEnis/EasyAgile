@@ -33,7 +33,7 @@ class Story
      *
      * @ORM\Column(name="estimate", type="integer")
      */
-    private $estimate;
+    private $estimate = 0;
 
     /**
      * @var array
@@ -150,4 +150,14 @@ class Story
     {
         return $this->session;
     }
+
+    /**
+     * @return string
+     */
+    function __toString()
+    {
+        return $this->title;
+    }
+
+
 }
