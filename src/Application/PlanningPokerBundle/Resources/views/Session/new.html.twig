@@ -1,7 +1,7 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-<h1>New Session</h1>
+<h3>New Session</h3>
 
 <form action="{{ path('poker_session_create') }}" method="post" {{ form_enctype(form) }}>
     {{ form_widget(form) }}

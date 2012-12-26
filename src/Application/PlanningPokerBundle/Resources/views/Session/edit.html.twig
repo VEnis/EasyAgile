@@ -1,7 +1,7 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-<h1>Rename Session</h1>
+<h3>Rename Session</h3>
 
 <form action="{{ path('poker_session_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
     {{ form_widget(edit_form) }}

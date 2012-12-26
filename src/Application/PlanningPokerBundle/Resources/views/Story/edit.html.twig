@@ -1,0 +1,13 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<h3>Renaming story "{{ entity.title }}"</h3>
+
+<form action="{{ path('poker_session_story_update', { 'id': entity.id, 'session_id': session.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+    {{ form_widget(edit_form) }}
+    <p>
+        <button type="submit" class="btn btn-primary">Save</button> or
+        <a class="btn" href="{{ path('poker_session_show', { 'id': session.id }) }}">Cancel and back to the session</a>
+    </p>
+</form>
+{% endblock %}
