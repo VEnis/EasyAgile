@@ -50,7 +50,7 @@ class Session
      *
      * @ORM\Column(name="completed", type="boolean")
      */
-    private $completed;
+    private $completed = false;
 
 
     /**
