@@ -1,0 +1,17 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <h3>Import stories from JIRA to session "{{ entity.title }}"</h3>
+
+    <form action="{{ path('poker_session_import_jira_process', { 'id': entity.id }) }}" method="post" {{ form_enctype(form) }}>
+        {{ form_widget(form) }}
+        <p>
+            <button type="submit" class="btn btn-primary">Import stories</button> or
+            <a href="{{ path('poker_session_show', { 'id': entity.id }) }}" class="btn">
+                Cancel and back to the sessions list
+            </a>
+        </p>
+    </form>
+
+
+{% endblock %}

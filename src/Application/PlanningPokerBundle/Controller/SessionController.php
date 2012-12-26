@@ -12,6 +12,8 @@ use Application\PlanningPokerBundle\Form\SessionType;
 
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Application\PlanningPokerBundle\Form\SessionInvitePeopleType;
+use Application\PlanningPokerBundle\Service\Jira;
+use Application\PlanningPokerBundle\Entity\Story;
 
 /**
  * Session controller.
@@ -237,5 +239,91 @@ class SessionController extends Controller
             'entity'      => $entity,
             'invite_form'   => $inviteForm->createView()
         );
+    }
+
+    /**
+     * Processes stories JIRA import
+     *
+     * @Route("/{id}/import/jira", name="poker_session_import_jira")
+     * @Template()
+     */
+    public function importJiraAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        return array(
+            'entity'      => $entity,
+            'form'   => $this->createImportJiraForm()->createView()
+        );
+    }
+
+    /**
+     * Processes JIRA import
+     *
+     * @Route("/{id}/import/jira-process", name="poker_session_import_jira_process")
+     * @Method("POST")
+     * @Template("ApplicationPlanningPokerBundle:Session:importJira.html.twig")
+     */
+    public function importJiraProcessAction(Request $request, $id)
+    {
+        //project%20%3D%20APPLINK%20AND%20Release%20%3D%20"R6.0.0"
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        $form = $this->createImportJiraForm();
+        $form->bind($request);
+
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $jql = $data["jql"];
+
+            $jira = new Jira();
+            $jira_stories = $jira->getTasksByJQL($data["jira_login"], $data["jira_password"], $data["jql"]);
+
+            foreach($jira_stories as $jira_story)
+            {
+                $story = new Story();
+                $story->setTitle($jira_story["fields"]["summary"]);
+                $story->setEstimate(0);
+                $story->setCustomFields(array("jira_key" => $jira_story["key"]));
+                $story->setSession($entity);
+
+                $em->persist($story);
+            }
+
+            $em->persist($entity);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+        }
+
+        return array(
+            'entity'      => $entity,
+            'invite_form'   => $form->createView()
+        );
+    }
+
+    protected function createImportJiraForm()
+    {
+        $data = array(
+            "jql" => 'project%20%3D%20APPLINK%20AND%20Release%20%3D%20"R6.0.0"'
+        );
+        return $this->createFormBuilder($data)
+            ->add("jira_login", 'text')
+            ->add('jira_password', 'password')
+            ->add("jql", 'text')
+            ->getForm()
+        ;
     }
 }
