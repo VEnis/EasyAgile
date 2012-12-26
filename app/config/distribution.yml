@@ -85,3 +85,9 @@ sonata_formatter:
 
 sonata_user:
   impersonating_route:    application_site_site_index
+
+stof_doctrine_extensions:
+    default_locale: en_US
+    orm:
+        default:
+            timestampable: true
