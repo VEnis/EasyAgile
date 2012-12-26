@@ -29,6 +29,10 @@ class LoadDefaultUsers implements FixtureInterface, ContainerAwareInterface
         $this->manager = $manager;
 
         $this->createUser("VEnis", "123123", "venis@luxoft.com", true, true);
+        $this->createUser("ARusinov", "123", "ARusinov@luxoft.com", true, false);
+        $this->createUser("SIdels", "123123", "SIdels@luxoft.com", true, false);
+        $this->createUser("EProdan", "123123", "EProdan@luxoft.com", true, false);
+        $this->createUser("VSokolov", "123123", "VSokolov@luxoft.com", true, false);
 
         $this->manager->flush();
     }
