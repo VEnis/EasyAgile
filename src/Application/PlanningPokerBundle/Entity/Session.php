@@ -55,7 +55,7 @@ class Session
     private $completed = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="Story", mappedBy="session")
+     * @ORM\OneToMany(targetEntity="Story", mappedBy="session", cascade={"remove"})
      */
     private $stories;
 
