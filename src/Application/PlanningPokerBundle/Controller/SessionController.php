@@ -53,11 +53,8 @@ class SessionController extends Controller
             throw $this->createNotFoundException('Unable to find Session entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
-
         return array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
+            'entity'      => $entity
         );
     }
 
@@ -122,12 +119,10 @@ class SessionController extends Controller
         }
 
         $editForm = $this->createForm(new SessionType(), $entity);
-        $deleteForm = $this->createDeleteForm($id);
 
         return array(
             'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'edit_form'   => $editForm->createView()
         );
     }
 
@@ -148,7 +143,6 @@ class SessionController extends Controller
             throw $this->createNotFoundException('Unable to find Session entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new SessionType(), $entity);
         $editForm->bind($request);
 
@@ -156,13 +150,12 @@ class SessionController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('poker_session_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
         }
 
         return array(
             'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'edit_form'   => $editForm->createView()
         );
     }
 
@@ -170,33 +163,20 @@ class SessionController extends Controller
      * Deletes a Session entity.
      *
      * @Route("/{id}/delete", name="poker_session_delete")
-     * @Method("POST")
+     * @Method("GET")
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->bind($request);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Session entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
         }
 
-        return $this->redirect($this->generateUrl('poker_session'));
-    }
+        $em->remove($entity);
+        $em->flush();
 
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder(array('id' => $id))
-            ->add('id', 'hidden')
-            ->getForm()
-        ;
+        return $this->redirect($this->generateUrl('poker_session'));
     }
 }

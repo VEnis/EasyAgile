@@ -1,45 +1,39 @@
-<h1>Session</h1>
+{% extends "::base.html.twig" %}
 
-<table class="record_properties">
-    <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ entity.id }}</td>
-        </tr>
-        <tr>
-            <th>Title</th>
-            <td>{{ entity.title }}</td>
-        </tr>
-        <tr>
-            <th>Created_at</th>
-            <td>{{ entity.createdat|date('Y-m-d H:i:s') }}</td>
-        </tr>
-        <tr>
-            <th>Updated_at</th>
-            <td>{{ entity.updatedat|date('Y-m-d H:i:s') }}</td>
-        </tr>
-        <tr>
-            <th>Completed</th>
-            <td>{{ entity.completed }}</td>
-        </tr>
-    </tbody>
-</table>
+{% block body %}
+<div class="row">
+    <div class="span9"><h3>Session "{{ entity.title }}"</h3></div>
+</div>
+<div class="row">
+    <div class="span9">
+        <div class="btn-toolbar">
+            <div class="btn-group">
+                <a href="{{ path('poker_session') }}" class="btn">
+                    Back to the sessions list
+                </a>
+            </div>
+            <div class="btn-group">
+                {% if entity.completed %}
+                    <a href="" class="btn">Reopen</a>
+                {% else %}
+                    <a href="" class="btn">Mark as "completed"</a>
+                {% endif %}
+            </div>
+            <div class="btn-group">
+                <a href="" class="btn">Import stories from JIRA</a>
+            </div>
+            <div class="btn-group">
+                <a href="{{ path('poker_session_edit', { 'id': entity.id }) }}" class="btn btn-info">
+                    Rename session
+                </a>
+                <a href="{{ path('poker_session_delete', { 'id': entity.id }) }}" class="btn btn-danger">
+                    Delete session
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
 
-<ul class="record_actions">
-    <li>
-        <a href="{{ path('poker_session') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('poker_session_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>
-        <form action="{{ path('poker_session_delete', { 'id': entity.id }) }}" method="post">
-            {{ form_widget(delete_form) }}
-            <button type="submit">Delete</button>
-        </form>
-    </li>
-</ul>
+
+{% endblock %}
