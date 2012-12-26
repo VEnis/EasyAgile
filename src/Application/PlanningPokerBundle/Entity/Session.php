@@ -199,4 +199,14 @@ class Session
     {
         return $this->stories;
     }
+
+    /**
+     * @return string
+     */
+    function __toString()
+    {
+        return $this->title;
+    }
+
+
 }
