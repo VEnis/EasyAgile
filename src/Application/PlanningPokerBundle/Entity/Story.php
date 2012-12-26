@@ -42,6 +42,12 @@ class Story
      */
     private $custom_fields;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Session", inversedBy="stories")
+     * @ORM\JoinColumn(name="session_id", referencedColumnName="id")
+     */
+    private $session;
+
 
     /**
      * Get id
@@ -120,5 +126,28 @@ class Story
     public function getCustomFields()
     {
         return $this->custom_fields;
+    }
+
+    /**
+     * Set session
+     *
+     * @param \Application\PlanningPokerBundle\Entity\Session $session
+     * @return Story
+     */
+    public function setSession(\Application\PlanningPokerBundle\Entity\Session $session = null)
+    {
+        $this->session = $session;
+    
+        return $this;
+    }
+
+    /**
+     * Get session
+     *
+     * @return \Application\PlanningPokerBundle\Entity\Session 
+     */
+    public function getSession()
+    {
+        return $this->session;
     }
 }

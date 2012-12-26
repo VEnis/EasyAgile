@@ -52,6 +52,11 @@ class Session
      */
     private $completed = false;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Story", mappedBy="session")
+     */
+    private $stories;
+
 
     /**
      * Get id
@@ -153,5 +158,45 @@ class Session
     public function getCompleted()
     {
         return $this->completed;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->stories = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add story
+     *
+     * @param \Application\PlanningPokerBundle\Entity\Story $story
+     * @return Session
+     */
+    public function addStory(\Application\PlanningPokerBundle\Entity\Story $story)
+    {
+        $this->stories[] = $story;
+    
+        return $this;
+    }
+
+    /**
+     * Remove story
+     *
+     * @param \Application\PlanningPokerBundle\Entity\Story $story
+     */
+    public function removeStory(\Application\PlanningPokerBundle\Entity\Story $story)
+    {
+        $this->stories->removeElement($story);
+    }
+
+    /**
+     * Get stories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getStories()
+    {
+        return $this->stories;
     }
 }
