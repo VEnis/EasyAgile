@@ -40,6 +40,7 @@ class AppKernel extends Kernel
             new Difane\Bundle\ContentPartBundle\DifaneContentPartBundle(),
             new SimpleThings\EntityAudit\SimpleThingsEntityAuditBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+            new Genemu\Bundle\FormBundle\GenemuFormBundle(),
             
             new Application\Sonata\UserBundle\ApplicationSonataUserBundle(),
             new Application\Sonata\MediaBundle\ApplicationSonataMediaBundle(),
