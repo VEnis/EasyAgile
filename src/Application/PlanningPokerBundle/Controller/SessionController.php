@@ -15,7 +15,7 @@ use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 /**
  * Session controller.
  *
- * @Route("/poker/session")
+ * @Route("/session")
  * @PreAuthorize("isFullyAuthenticated()")
  */
 class SessionController extends Controller
