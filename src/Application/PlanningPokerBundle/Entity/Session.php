@@ -4,6 +4,8 @@ namespace Application\PlanningPokerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Application\PlanningPokerBundle\Validator\Constraint as Constraint;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Session
@@ -60,6 +62,10 @@ class Session
     /**
      * @ORM\ManyToMany(targetEntity="\Application\Sonata\UserBundle\Entity\User", inversedBy="sessions")
      * @ORM\JoinTable(name="session_peoples")
+     *
+     * @Assert\All(constraints={
+     *     @Constraint\UniqueInCollection(propertyPath ="username", message="Duplicates are not allowed")
+     * })
      */
     private $peoples;
 
