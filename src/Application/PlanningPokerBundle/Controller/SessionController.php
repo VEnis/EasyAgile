@@ -293,10 +293,13 @@ class SessionController extends Controller
 
             foreach($jira_stories as $jira_story)
             {
+                $key = $jira_story["key"];
+                $title = $jira_story["fields"]["summary"];
+
                 $story = new Story();
-                $story->setTitle($jira_story["fields"]["summary"]);
+                $story->setTitle(sprintf("[%s]: %s", $key, $title));
                 $story->setEstimate(0);
-                $story->setCustomFields(array("jira_key" => $jira_story["key"]));
+                $story->setCustomFields(array("jira_key" => $key));
                 $story->setSession($entity);
 
                 $em->persist($story);
