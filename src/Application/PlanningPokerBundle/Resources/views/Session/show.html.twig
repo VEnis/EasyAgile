@@ -48,7 +48,13 @@
             <tbody>
             {% for story in entity.stories %}
                 <tr>
-                    <td>{{ story.title }}</td>
+                    <td>
+                        {% if story.customFields.jira_key is defined %}
+                            <a href="https://adc.luxoft.com/jira/browse/{{ story.customFields.jira_key }}" target="_blank">{{ story.title }}</a>
+                        {% else %}
+                            {{ story.title }}
+                        {% endif %}
+                    </td>
                     <td>{{ story.estimate }}</td>
                     <td>
                         <div class="btn-toolbar">
