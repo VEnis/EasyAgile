@@ -57,6 +57,12 @@ class Session
      */
     private $stories;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="\Application\Sonata\UserBundle\Entity\User", inversedBy="sessions")
+     * @ORM\JoinTable(name="session_peoples")
+     */
+    private $peoples;
+
 
     /**
      * Get id
@@ -208,5 +214,36 @@ class Session
         return $this->title;
     }
 
+    /**
+     * Add peoples
+     *
+     * @param \Application\Sonata\UserBundle\Entity\User $peoples
+     * @return Session
+     */
+    public function addPeople(\Application\Sonata\UserBundle\Entity\User $peoples)
+    {
+        $this->peoples[] = $peoples;
+    
+        return $this;
+    }
 
+    /**
+     * Remove peoples
+     *
+     * @param \Application\Sonata\UserBundle\Entity\User $peoples
+     */
+    public function removePeople(\Application\Sonata\UserBundle\Entity\User $peoples)
+    {
+        $this->peoples->removeElement($peoples);
+    }
+
+    /**
+     * Get peoples
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPeoples()
+    {
+        return $this->peoples;
+    }
 }

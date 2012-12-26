@@ -33,6 +33,11 @@ class User extends BaseUser
     protected $invitation;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Application\PlanningPokerBundle\Entity\Session", mappedBy="peoples")
+     */
+    protected $sessions;
+
+    /**
      * Get id
      *
      * @return integer $id
@@ -63,5 +68,47 @@ class User extends BaseUser
     public function getInvitation()
     {
         return $this->invitation;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->sessions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add sessions
+     *
+     * @param \Application\PlanningPokerBundle\Entity\Session $sessions
+     * @return User
+     */
+    public function addSession(\Application\PlanningPokerBundle\Entity\Session $sessions)
+    {
+        $this->sessions[] = $sessions;
+    
+        return $this;
+    }
+
+    /**
+     * Remove sessions
+     *
+     * @param \Application\PlanningPokerBundle\Entity\Session $sessions
+     */
+    public function removeSession(\Application\PlanningPokerBundle\Entity\Session $sessions)
+    {
+        $this->sessions->removeElement($sessions);
+    }
+
+    /**
+     * Get sessions
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSessions()
+    {
+        return $this->sessions;
     }
 }
