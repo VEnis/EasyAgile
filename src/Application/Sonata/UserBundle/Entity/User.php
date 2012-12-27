@@ -38,6 +38,11 @@ class User extends BaseUser
     protected $sessions;
 
     /**
+     * @ORM\OneToMany(targetEntity="\Application\PlanningPokerBundle\Entity\Session", mappedBy="ownedBy", cascade={"remove"})
+     */
+    private $mySessions;
+
+    /**
      * Get id
      *
      * @return integer $id
@@ -77,6 +82,7 @@ class User extends BaseUser
     {
         parent::__construct();
         $this->sessions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->mySessions = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -110,5 +116,38 @@ class User extends BaseUser
     public function getSessions()
     {
         return $this->sessions;
+    }
+
+    /**
+     * Add mySessions
+     *
+     * @param \Application\PlanningPokerBundle\Entity\Session $mySessions
+     * @return User
+     */
+    public function addMySession(\Application\PlanningPokerBundle\Entity\Session $mySessions)
+    {
+        $this->mySessions[] = $mySessions;
+    
+        return $this;
+    }
+
+    /**
+     * Remove mySessions
+     *
+     * @param \Application\PlanningPokerBundle\Entity\Session $mySessions
+     */
+    public function removeMySession(\Application\PlanningPokerBundle\Entity\Session $mySessions)
+    {
+        $this->mySessions->removeElement($mySessions);
+    }
+
+    /**
+     * Get mySessions
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMySessions()
+    {
+        return $this->mySessions;
     }
 }

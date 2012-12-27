@@ -31,12 +31,8 @@ class SessionController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('ApplicationPlanningPokerBundle:Session')->findAll();
-
         return array(
-            'entities' => $entities,
+            'entities' => $this->getUser()->getMySessions(),
         );
     }
 
@@ -93,6 +89,7 @@ class SessionController extends Controller
 
         if ($form->isValid()) {
             $entity->addPeople($this->getUser());
+            $entity->setOwnedBy($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();

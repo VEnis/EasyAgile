@@ -69,6 +69,12 @@ class Session
      */
     private $peoples;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="\Application\Sonata\UserBundle\Entity\User", inversedBy="mySessions")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     */
+    private $ownedBy;
+
 
     /**
      * Get id
@@ -251,5 +257,28 @@ class Session
     public function getPeoples()
     {
         return $this->peoples;
+    }
+
+    /**
+     * Set ownedBy
+     *
+     * @param \Application\Sonata\UserBundle\Entity\User $ownedBy
+     * @return Session
+     */
+    public function setOwnedBy(\Application\Sonata\UserBundle\Entity\User $ownedBy = null)
+    {
+        $this->ownedBy = $ownedBy;
+    
+        return $this;
+    }
+
+    /**
+     * Get ownedBy
+     *
+     * @return \Application\Sonata\UserBundle\Entity\User 
+     */
+    public function getOwnedBy()
+    {
+        return $this->ownedBy;
     }
 }
