@@ -32,7 +32,8 @@ class SessionController extends Controller
     public function indexAction()
     {
         return array(
-            'entities' => $this->getUser()->getMySessions(),
+            'mySessions' => $this->getUser()->getMySessions(),
+            'sessions' => $this->getUser()->getSessions()
         );
     }
 

@@ -1,42 +1,84 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-<h3>My sessions</h3>
 
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Created</th>
-            <th>Completed</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for entity in entities %}
-        <tr>
-            <td>{{ entity.title }}</td>
-            <td>{% if entity.createdat %}{{ entity.createdat|date('Y-m-d H:i:s') }}{% endif %}</td>
-            <td>{% if entity.completed %}
-                    <p class="text-info">Session is completed</p>
-                {% else %}
-                    <p class="text-warning">Session is not completed</p>
-                {% endif %}
-            </td>
-            <td>
-                <div class="btn-toolbar">
-                    <div class="btn-group">
-                        <a class="btn btn-info" href="{{ path('poker_session_show', { 'id': entity.id }) }}">Go to session</a>
-                        <a class="btn btn-danger" href="{{ path('poker_session_delete', { 'id': entity.id }) }}">Delete session</a>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#my-sessions" data-toggle="tab">My sessions</a></li>
+    <li><a href="#other-sessions" data-toggle="tab">Sessions where I am involved</a></li>
+</ul>
 
-<a class="btn btn-primary" href="{{ path('poker_session_new') }}">
-    Create a new session
-</a>
+<div class="tab-content">
+    <div class="tab-pane active" id="my-sessions">
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Completed</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for mySession in mySessions %}
+                <tr>
+                    <td>{{ mySession.title }}</td>
+                    <td>{% if mySession.createdat %}{{ mySession.createdat|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{% if mySession.completed %}
+                            <p class="text-info">Session is completed</p>
+                        {% else %}
+                            <p class="text-warning">Session is not completed</p>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-toolbar">
+                            <div class="btn-group">
+                                <a class="btn btn-info" href="{{ path('poker_session_show', { 'id': mySession.id }) }}">Go to session</a>
+                                <a class="btn btn-danger" href="{{ path('poker_session_delete', { 'id': mySession.id }) }}">Delete session</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a class="btn btn-primary" href="{{ path('poker_session_new') }}">
+            Create a new session
+        </a>
+    </div>
+    <div class="tab-pane" id="other-sessions">
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Completed</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for session in sessions %}
+                <tr>
+                    <td>{{ session.title }}</td>
+                    <td>{% if session.createdat %}{{ session.createdat|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{% if session.completed %}
+                            <p class="text-info">Session is completed</p>
+                        {% else %}
+                            <p class="text-warning">Session is not completed</p>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-toolbar">
+                            <div class="btn-group">
+                                <a class="btn btn-info" href="{{ path('poker_session_show', { 'id': session.id }) }}">Go to session</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}
