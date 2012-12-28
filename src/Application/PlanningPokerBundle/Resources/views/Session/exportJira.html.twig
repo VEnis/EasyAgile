@@ -1,0 +1,17 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <h3>Export story "{{ story.title }}" from session "{{ entity.title }}" back to JIRA</h3>
+
+    <form action="{{ path('poker_session_export_jira_process', { 'id': entity.id, 'story_id': story.id }) }}" method="post" {{ form_enctype(form) }}>
+        {{ form_widget(form) }}
+        <p>
+            <button type="submit" class="btn btn-primary">Export story</button> or
+            <a href="{{ path('poker_session_show', { 'id': entity.id }) }}" class="btn">
+                Cancel and back to the session
+            </a>
+        </p>
+    </form>
+
+
+{% endblock %}

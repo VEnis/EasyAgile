@@ -369,6 +369,72 @@ class SessionController extends Controller
         );
     }
 
+    /**
+     * Processes stories JIRA export
+     *
+     * @Route("/{id}/export/jira/{story_id}", name="poker_session_export_jira")
+     * @Template()
+     */
+    public function exportJiraAction(Request $request, $id, $story_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+        $story = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($story_id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        if (!$story) {
+            throw $this->createNotFoundException('Unable to find Story entity.');
+        }
+
+        return array(
+            'entity'      => $entity,
+            'story'      => $story,
+            'form'   => $this->createExportJiraAllForm()->createView()
+        );
+    }
+
+    /**
+     * Processes JIRA export
+     *
+     * @Route("/{id}/export/jira-process/{story_id}", name="poker_session_export_jira_process")
+     * @Method("POST")
+     * @Template("ApplicationPlanningPokerBundle:Session:exportJira.html.twig")
+     */
+    public function exportJiraProcessAction(Request $request, $id, $story_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+        $story = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($story_id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        if (!$story) {
+            throw $this->createNotFoundException('Unable to find Story entity.');
+        }
+
+        $form = $this->createExportJiraAllForm();
+        $form->bind($request);
+
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $jira = new Jira();
+            $jira->updateTasksEstimates($data["jira_login"], $data["jira_password"], array($story));
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+        }
+
+        return array(
+            'entity'      => $entity,
+            'story'      => $story,
+            'form'   => $form->createView()
+        );
+    }
+
     protected function createImportJiraForm()
     {
         $data = array(
