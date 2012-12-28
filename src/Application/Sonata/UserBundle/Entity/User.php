@@ -43,6 +43,11 @@ class User extends BaseUser
     private $mySessions;
 
     /**
+     * @ORM\OneToMany(targetEntity="\Application\PlanningPokerBundle\Entity\StoryEstimateByUser", mappedBy="user")
+     */
+    protected $estimatedStories;
+
+    /**
      * Get id
      *
      * @return integer $id
@@ -83,6 +88,7 @@ class User extends BaseUser
         parent::__construct();
         $this->sessions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->mySessions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->estimatedStories = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -149,5 +155,38 @@ class User extends BaseUser
     public function getMySessions()
     {
         return $this->mySessions;
+    }
+
+    /**
+     * Add estimatedStory
+     *
+     * @param \Application\PlanningPokerBundle\Entity\StoryEstimateByUser $estimatedStory
+     * @return User
+     */
+    public function addEstimatedStory(\Application\PlanningPokerBundle\Entity\StoryEstimateByUser $estimatedStory)
+    {
+        $this->estimatedStories[] = $estimatedStory;
+    
+        return $this;
+    }
+
+    /**
+     * Remove estimatedStory
+     *
+     * @param \Application\PlanningPokerBundle\Entity\StoryEstimateByUser $estimatedStory
+     */
+    public function removeEstimatedStory(\Application\PlanningPokerBundle\Entity\StoryEstimateByUser $estimatedStory)
+    {
+        $this->estimatedStories->removeElement($estimatedStory);
+    }
+
+    /**
+     * Get estimatedStories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEstimatedStories()
+    {
+        return $this->estimatedStories;
     }
 }

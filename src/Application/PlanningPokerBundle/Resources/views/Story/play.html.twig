@@ -18,7 +18,7 @@
             {% for people in session.peoples %}
                 <tr>
                     <td><i class="icon-user"></i> {{ people.username }}{% if people.username == app.user.username %} (I am){% endif %}</td>
-                    <td>{{ random(['0', '1/2', '1', '2', '3', '5', '8', '13', '20', '40', '100', '&#8734;', '?'])|raw }}</td>
+                    <td><span id="user_estimate_{{ people.id }}" style="display: none;">{{ random(['0', '1/2', '1', '2', '3', '5', '8', '13', '20', '40', '100', '&#8734;', '?'])|raw }}</span></td>
                 </tr>
             {% endfor %}
 
@@ -35,16 +35,16 @@
             </thead>
             <tbody>
             <tr class="info">
-                <td>Focus-factor</td>
+                <td>Focus-factor (value is hardcoded currently)</td>
                 <td>0.4</td>
             </tr>
             <tr class="info">
                 <td>Mean value (ideal hours)</td>
-                <td>13</td>
+                <td><span id="ideal_mean_value">13</span></td>
             </tr>
             <tr class="info">
                 <td>Mean value (real hours)</td>
-                <td>32.5</td>
+                <td><span id="real_mean_value">32.5</span></td>
             </tr>
             </tbody>
         </table>
@@ -91,11 +91,61 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        $(function() {
-            $("a[rel=popover]").popover({
-                template: '<div class="popover popover-poker-card"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
-            })
+        function updateEstimates(data)
+        {
+            for(var i in data.estimates){
+                var estimate = data.estimates[i];
+                var id = "#user_estimate_"+estimate.uid;
+                $(id).text(estimate.estimate);
+            }
 
+            if(data.complete){
+                $('[id^="user_estimate_"]').show();
+            } else {
+                $('[id^="user_estimate_"]').hide();
+            }
+
+            $('[id^="user_estimate_"]').show();
+            calculateMeanValues(data.estimates);
+        }
+
+        function calculateMeanValues(data)
+        {
+            console.log(data);
+            var validValues = [0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100];
+            var dataForCalculation = data
+                .filter(function(x){return jQuery.inArray(parseFloat(x.estimate), validValues)})
+                .map(function(x){return parseFloat(x.estimate)})
+            ;
+            console.log(dataForCalculation);
+            var idealMeanValue = mean(dataForCalculation);
+            var focusFactor = 0.4;
+            var realMeanValue = idealMeanValue / focusFactor;
+
+            $("#ideal_mean_value").text(idealMeanValue);
+            $("#real_mean_value").text(realMeanValue);
+
+            var $newEstimateElement = $("#application_planningpokerbundle_storytype_estimate");
+            if($newEstimateElement.val() == 0){
+                $newEstimateElement.val(realMeanValue);
+            }
+        }
+
+        function mean(numbers) {
+            var total = 0,
+                    i;
+            for (i = 0; i < numbers.length; i += 1) {
+                total += numbers[i];
+            }
+            return total / numbers.length;
+        }
+
+        $(function() {
+            setInterval(function(){
+                $.ajax({ url: "{{ path('poker_session_story_estimates', { 'id': story.id, 'session_id': session.id }) }}", success: function(data){
+                    updateEstimates(data);
+                }, dataType: "json"});
+            }, 2000);
         });
     </script>
 {% endblock %}
@@ -103,8 +153,6 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .popover-poker-card {
-            width: auto;
-        }
+
     </style>
 {% endblock %}

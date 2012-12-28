@@ -14,6 +14,7 @@ use Application\PlanningPokerBundle\Form\StoryType;
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Application\PlanningPokerBundle\Entity\Session;
 use Application\PlanningPokerBundle\Form\StorySetEstimateType;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Story controller.
@@ -234,5 +235,53 @@ class StoryController extends Controller
             'entity'      => $entity,
             'edit_form'   => $estimateForm->createView()
         );
+    }
+
+    /**
+     *
+     * @Route("/{id}/estimates", name="poker_session_story_estimates")
+     * @Method("GET")
+     */
+    public function userEstimatesAction(Request $request, $id)
+    {
+        $story = $this->getStory($id);
+        $estimates = $story->getUsersEstimates();
+
+        $expectedEstimatesCount = $story->getSession()->getPeoples()->count();
+        $actualEstimatesCount = $estimates->count();
+
+        $result = array(
+            "complete" => $expectedEstimatesCount == $actualEstimatesCount
+        );
+        foreach($estimates as $estimate)
+        {
+            if($estimate->getIsEstimated())
+            {
+                $result["estimates"][] = array(
+                    "uid" => $estimate->getUser()->getId(),
+                    "estimate" => $estimate->getEstimate()
+                );
+            }
+        }
+
+        return new Response(json_encode($result));
+    }
+
+    /**
+     * @param $id Story id
+     * @return \Application\PlanningPokerBundle\Entity\Story
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getStory($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Story entity.');
+        }
+
+        return $entity;
     }
 }

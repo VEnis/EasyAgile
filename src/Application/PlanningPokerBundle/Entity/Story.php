@@ -48,6 +48,11 @@ class Story
      */
     private $session;
 
+    /**
+     * @ORM\OneToMany(targetEntity="StoryEstimateByUser", mappedBy="story")
+     */
+    protected $usersEstimates;
+
 
     /**
      * Get id
@@ -160,4 +165,44 @@ class Story
     }
 
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->usersEstimates = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add usersEstimates
+     *
+     * @param \Application\PlanningPokerBundle\Entity\StoryEstimateByUser $usersEstimates
+     * @return Story
+     */
+    public function addUsersEstimate(\Application\PlanningPokerBundle\Entity\StoryEstimateByUser $usersEstimates)
+    {
+        $this->usersEstimates[] = $usersEstimates;
+    
+        return $this;
+    }
+
+    /**
+     * Remove usersEstimates
+     *
+     * @param \Application\PlanningPokerBundle\Entity\StoryEstimateByUser $usersEstimates
+     */
+    public function removeUsersEstimate(\Application\PlanningPokerBundle\Entity\StoryEstimateByUser $usersEstimates)
+    {
+        $this->usersEstimates->removeElement($usersEstimates);
+    }
+
+    /**
+     * Get usersEstimates
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsersEstimates()
+    {
+        return $this->usersEstimates;
+    }
 }
