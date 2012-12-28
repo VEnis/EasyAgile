@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}EasyAgile{% endblock %}</title>
         {% block stylesheets %}
-            {% stylesheets 'bootstrap/css/bootstrap.css' %}
+            {% stylesheets 'bootstrap/css/bootstrap.css' filter='cssrewrite' %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
