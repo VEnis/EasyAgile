@@ -120,6 +120,10 @@
                 $("#real_mean_value").hide();
             }
 
+            // Showing own changes
+            var myId = {{ app.user.id }}
+
+            $("#user_estimate_"+myId).show();
             //$('[id^="user_estimate_"]').show();
         }
 
