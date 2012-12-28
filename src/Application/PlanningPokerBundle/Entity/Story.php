@@ -49,7 +49,7 @@ class Story
     private $session;
 
     /**
-     * @ORM\OneToMany(targetEntity="StoryEstimateByUser", mappedBy="story",cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="StoryEstimateByUser", mappedBy="story",cascade={"persist", "remove"})
      */
     protected $usersEstimates;
 

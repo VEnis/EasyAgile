@@ -38,12 +38,12 @@ class User extends BaseUser
     protected $sessions;
 
     /**
-     * @ORM\OneToMany(targetEntity="\Application\PlanningPokerBundle\Entity\Session", mappedBy="ownedBy", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="\Application\PlanningPokerBundle\Entity\Session", mappedBy="ownedBy", cascade={"persist", "remove"})
      */
     private $mySessions;
 
     /**
-     * @ORM\OneToMany(targetEntity="\Application\PlanningPokerBundle\Entity\StoryEstimateByUser", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="\Application\PlanningPokerBundle\Entity\StoryEstimateByUser", mappedBy="user", cascade={"persist", "remove"})
      */
     protected $estimatedStories;
 

@@ -15,7 +15,7 @@
             {% if entity.getOwnedBy() == app.user %}
             <div class="btn-group">
                 <a href="{{ path('poker_session_import_jira', {'id': entity.id}) }}" class="btn">Import stories from JIRA</a>
-                <a href="" class="btn">Export all estimates back to JIRA</a>
+                <a href="{{ path('poker_session_export_jira_all', {'id': entity.id}) }}" class="btn">Export all estimates back to JIRA</a>
             </div>
             <div class="btn-group">
                 <a href="{{ path('poker_session_edit', { 'id': entity.id }) }}" class="btn btn-info">

@@ -311,7 +311,61 @@ class SessionController extends Controller
 
         return array(
             'entity'      => $entity,
-            'invite_form'   => $form->createView()
+            'form'   => $form->createView()
+        );
+    }
+
+    /**
+     * Processes stories JIRA export
+     *
+     * @Route("/{id}/export/jira-all", name="poker_session_export_jira_all")
+     * @Template()
+     */
+    public function exportAllJiraAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        return array(
+            'entity'      => $entity,
+            'form'   => $this->createExportJiraAllForm()->createView()
+        );
+    }
+
+    /**
+     * Processes JIRA export
+     *
+     * @Route("/{id}/export/jira-all-process", name="poker_session_export_jira_all_process")
+     * @Method("POST")
+     * @Template("ApplicationPlanningPokerBundle:Session:exportAllJira.html.twig")
+     */
+    public function exportAllJiraProcessAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Session entity.');
+        }
+
+        $form = $this->createExportJiraAllForm();
+        $form->bind($request);
+
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $jira = new Jira();
+            $jira->updateTasksEstimates($data["jira_login"], $data["jira_password"], $entity->getStories());
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+        }
+
+        return array(
+            'entity'      => $entity,
+            'form'   => $form->createView()
         );
     }
 
@@ -326,5 +380,14 @@ class SessionController extends Controller
             ->add("jql", 'text')
             ->getForm()
         ;
+    }
+
+    protected function createExportJiraAllForm()
+    {
+        return $this->createFormBuilder()
+            ->add("jira_login", 'text')
+            ->add('jira_password', 'password')
+            ->getForm()
+            ;
     }
 }
