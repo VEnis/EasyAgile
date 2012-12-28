@@ -13,6 +13,7 @@ use Application\PlanningPokerBundle\Form\StoryType;
 
 use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Application\PlanningPokerBundle\Entity\Session;
+use Application\PlanningPokerBundle\Form\StorySetEstimateType;
 
 /**
  * Story controller.
@@ -171,5 +172,67 @@ class StoryController extends Controller
         $em->flush();
 
         return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
+    }
+
+    /**
+     * Let's play the poker
+     *
+     * @param $id
+     * @param \Application\PlanningPokerBundle\Entity\Session $session
+     * @return array
+     *
+     * @Route("/{id}/play", name="poker_session_story_play")
+     * @Method("GET")
+     * @Template
+     */
+    public function playAction(Session $session, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Story entity.');
+        }
+
+        $estimateForm = $this->createForm(new StorySetEstimateType(), $entity);
+
+        return array(
+            "story" => $entity,
+            "session" => $session,
+            "estimate_fofm" => $estimateForm->createView()
+        );
+    }
+
+    /**
+     * Game over
+     *
+     * @Route("/{id}/game-over", name="poker_session_story_gameover")
+     * @Method("POST")
+     * @Template("ApplicationPlanningPokerBundle:Story:play.html.twig")
+     */
+    public function gameoverAction(Request $request, $id, Session $session)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Story entity.');
+        }
+
+        $estimateForm = $this->createForm(new StorySetEstimateType(), $entity);
+        $estimateForm->bind($request);
+
+        if ($estimateForm->isValid()) {
+            $em->persist($entity);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
+        }
+
+        return array(
+            'entity'      => $entity,
+            'edit_form'   => $estimateForm->createView()
+        );
     }
 }

@@ -59,7 +59,7 @@
                     <td>
                         <div class="btn-toolbar">
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="#">Play poker!</a>
+                                <a class="btn btn-primary" href="{{ path('poker_session_story_play', { 'id': story.id, 'session_id': entity.id }) }}">Play poker!</a>
                                 <a class="btn btn-info" href="#">Export story estimation</a>
                                 <a class="btn btn-info" href="{{ path('poker_session_story_edit', { 'id': story.id, 'session_id': entity.id }) }}">Rename story</a>
                                 <a class="btn btn-danger" href="{{ path('poker_session_story_delete', { 'id': story.id, 'session_id': entity.id }) }}">Delete story</a>
