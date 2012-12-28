@@ -268,6 +268,33 @@ class StoryController extends Controller
     }
 
     /**
+     * Game over
+     *
+     * @Route("/{id}/set-estimate/{user_id}/{estimate}", name="poker_session_story_set_estimate")
+     * @Template("ApplicationPlanningPokerBundle:Story:play.html.twig")
+     */
+    public function setEstimateAction(Request $request, $id, $estimate, $user_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $story = $this->getStory($id);
+        $user = $em->getRepository("ApplicationSonataUserBundle:User")->find($user_id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('Unable to find User.');
+        }
+
+        //TODO: Implement estimate validation
+        $story->setUsersEstimate($user, $estimate);
+
+        $em->persist($story);
+        $em->flush();
+
+        return new Response(json_encode(array(
+            "result" => true
+        )));
+    }
+
+    /**
      * @param $id Story id
      * @return \Application\PlanningPokerBundle\Entity\Story
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException

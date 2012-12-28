@@ -29,9 +29,9 @@ class Story
     private $title;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="estimate", type="integer")
+     * @ORM\Column(name="estimate", type="float")
      */
     private $estimate = 0;
 
@@ -49,7 +49,7 @@ class Story
     private $session;
 
     /**
-     * @ORM\OneToMany(targetEntity="StoryEstimateByUser", mappedBy="story")
+     * @ORM\OneToMany(targetEntity="StoryEstimateByUser", mappedBy="story",cascade={"persist"})
      */
     protected $usersEstimates;
 
@@ -90,7 +90,7 @@ class Story
     /**
      * Set estimate
      *
-     * @param integer $estimate
+     * @param float $estimate
      * @return Story
      */
     public function setEstimate($estimate)
@@ -103,7 +103,7 @@ class Story
     /**
      * Get estimate
      *
-     * @return integer 
+     * @return float
      */
     public function getEstimate()
     {
@@ -204,5 +204,33 @@ class Story
     public function getUsersEstimates()
     {
         return $this->usersEstimates;
+    }
+
+    public function setUsersEstimate(\Application\Sonata\UserBundle\Entity\User $user, $estimate)
+    {
+        $existingEstimation = null;
+
+        foreach ($this->getUsersEstimates() as $userEstimate)
+        {
+            if($userEstimate->getUser() == $user)
+            {
+                $existingEstimation = $userEstimate;
+                break;
+            }
+        }
+
+        if(is_null($existingEstimation))
+        {
+            $s = new StoryEstimateByUser();
+            $s->setEstimate($estimate);
+            $s->setStory($this);
+            $s->setUser($user);
+
+            $this->addUsersEstimate($s);
+        }
+        else
+        {
+            $existingEstimation->setEstimate($estimate);
+        }
     }
 }

@@ -22,9 +22,9 @@ class StoryEstimateByUser
     private $id;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="estimate", type="integer")
+     * @ORM\Column(name="estimate", type="float")
      */
     private $estimate;
 
@@ -59,7 +59,7 @@ class StoryEstimateByUser
     /**
      * Set estimate
      *
-     * @param integer $estimate
+     * @param float $estimate
      * @return StoryEstimateByUser
      */
     public function setEstimate($estimate)
@@ -73,7 +73,7 @@ class StoryEstimateByUser
     /**
      * Get estimate
      *
-     * @return integer 
+     * @return float
      */
     public function getEstimate()
     {

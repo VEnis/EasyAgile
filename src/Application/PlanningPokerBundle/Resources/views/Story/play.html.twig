@@ -49,28 +49,29 @@
             </tbody>
         </table>
 
+        <span id="spinner-my-estimation"></span>
         <div class="btn-group">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                 Set my estimate to
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">8</a></li>
-                <li><a href="#">13</a></li>
-                <li><a href="#">20</a></li>
-                <li><a href="#">40</a></li>
-                <li><a href="#">100</a></li>
+                {{ macro.my_possible_estimate(1, 1, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(2, 2, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(3, 3, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(5, 5, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(8, 8, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(13, 13, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(20, 20, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(40, 40, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(100, 100, story.id, session.id, app.user.id) }}
                 <li class="divider"></li>
-                <li><a href="#">0</a></li>
-                <li><a href="#">1/2</a></li>
-                <li><a href="#">&#8734;</a></li>
+                {{ macro.my_possible_estimate(0, 0, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(0.5, 0.5, story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(-3, "&#8734;", story.id, session.id, app.user.id) }}
                 <li class="divider"></li>
-                <li><a href="#">?</a></li>
-                <li><a href="#"><i class="icon-glass"></i> Pause</a></li>
+                {{ macro.my_possible_estimate(-2, "?", story.id, session.id, app.user.id) }}
+                {{ macro.my_possible_estimate(-1, "<i class='icon-glass'></i> Pause", story.id, session.id, app.user.id) }}
             </ul>
         </div>
         <hr>
@@ -90,6 +91,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="/bootstrap-ajax/spin.min.js" type="text/javascript"></script>
+    <script src="/bootstrap-ajax/bootstrap-ajax.js" type="text/javascript"></script>
+
     <script type="text/javascript">
         function updateEstimates(data)
         {
@@ -114,9 +118,10 @@
             console.log(data);
             var validValues = [0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100];
             var dataForCalculation = data
-                .filter(function(x){return jQuery.inArray(parseFloat(x.estimate), validValues)})
+                .filter(function(x){return (-1 != jQuery.inArray(parseFloat(x.estimate), validValues))})
                 .map(function(x){return parseFloat(x.estimate)})
             ;
+
             console.log(dataForCalculation);
             var idealMeanValue = mean(dataForCalculation);
             var focusFactor = 0.4;
@@ -156,3 +161,8 @@
 
     </style>
 {% endblock %}
+
+{% macro my_possible_estimate(store_as, display_as, story_id, session_id, user_id) %}
+    <li><a href="{{ path('poker_session_story_set_estimate', { 'id': story_id, 'session_id': session_id, 'user_id': user_id, 'estimate':store_as }) }}" class="ajax" data-spinner="off">{{ display_as|raw }}</a></li>
+{% endmacro %}
+{% import _self as macro %}
