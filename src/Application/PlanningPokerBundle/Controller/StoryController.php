@@ -251,7 +251,8 @@ class StoryController extends Controller
         $actualEstimatesCount = $estimates->count();
 
         $result = array(
-            "complete" => $expectedEstimatesCount == $actualEstimatesCount
+            "complete" => $expectedEstimatesCount == $actualEstimatesCount,
+            "estimates" => array()
         );
         foreach($estimates as $estimate)
         {
