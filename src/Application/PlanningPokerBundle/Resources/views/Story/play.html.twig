@@ -115,14 +115,12 @@
 
         function calculateMeanValues(data)
         {
-            console.log(data);
             var validValues = [0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100];
             var dataForCalculation = data
                 .filter(function(x){return (-1 != jQuery.inArray(parseFloat(x.estimate), validValues))})
                 .map(function(x){return parseFloat(x.estimate)})
             ;
 
-            console.log(dataForCalculation);
             var idealMeanValue = mean(dataForCalculation);
             var focusFactor = 0.4;
             var realMeanValue = idealMeanValue / focusFactor;
