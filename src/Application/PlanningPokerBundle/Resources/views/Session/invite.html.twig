@@ -52,7 +52,7 @@
     <script type="text/javascript">
         function triggerJavascript(id)
         {
-            $field = $('#' + id);
+            var $field = $('#' + id);
 
             {{ form_javascript(invite_form.peoples.vars.prototype, true) }}
         }
