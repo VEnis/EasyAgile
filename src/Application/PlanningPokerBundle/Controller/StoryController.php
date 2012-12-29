@@ -33,19 +33,9 @@ class StoryController extends Controller
      */
     public function showAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
         return array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
+            'story'      => $this->getStory($id),
+            'delete_form' => $this->createDeleteForm($id)->createView(),
         );
     }
 
@@ -57,12 +47,12 @@ class StoryController extends Controller
      */
     public function newAction(Session $session)
     {
-        $entity = new Story();
-        $entity->setSession($session);
-        $form   = $this->createForm(new StoryType(), $entity);
+        $story = new Story();
+        $story->setSession($session);
+        $form   = $this->createForm(new StoryType(), $story);
 
         return array(
-            'entity' => $entity,
+            'story' => $story,
             'form'   => $form->createView(),
             'session' => $session
         );
@@ -77,21 +67,21 @@ class StoryController extends Controller
      */
     public function createAction(Request $request, Session $session)
     {
-        $entity  = new Story();
-        $entity->setSession($session);
-        $form = $this->createForm(new StoryType(), $entity);
+        $story  = new Story();
+        $story->setSession($session);
+        $form = $this->createForm(new StoryType(), $story);
         $form->bind($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
+            $em->persist($story);
             $em->flush();
 
             return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity' => $entity,
+            'story' => $story,
             'form'   => $form->createView(),
         );
     }
@@ -104,18 +94,11 @@ class StoryController extends Controller
      */
     public function editAction($id, Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
-        $editForm = $this->createForm(new StoryType(), $entity);
+        $story = $this->getStory($id);
+        $editForm = $this->createForm(new StoryType(), $story);
 
         return array(
-            'entity'      => $entity,
+            'story'      => $story,
             'edit_form'   => $editForm->createView(),
             'session' => $session
         );
@@ -130,26 +113,21 @@ class StoryController extends Controller
      */
     public function updateAction(Request $request, $id, Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
+        $story = $this->getStory($id);
 
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
-        $editForm = $this->createForm(new StoryType(), $entity);
+        $editForm = $this->createForm(new StoryType(), $story);
         $editForm->bind($request);
 
         if ($editForm->isValid()) {
-            $em->persist($entity);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($story);
             $em->flush();
 
             return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'story'      => $story,
             'edit_form'   => $editForm->createView()
         );
     }
@@ -163,13 +141,9 @@ class StoryController extends Controller
     public function deleteAction(Request $request, $id, Session $session)
     {
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
+        $story = $this->getStory($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
-        $em->remove($entity);
+        $em->remove($story);
         $em->flush();
 
         return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
@@ -188,19 +162,13 @@ class StoryController extends Controller
      */
     public function playAction(Session $session, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
-        $estimateForm = $this->createForm(new StorySetEstimateType(), $entity);
+        $story = $this->getStory($id);
+        $estimateForm = $this->createForm(new StorySetEstimateType(), $story);
 
         return array(
-            "story" => $entity,
+            "story" => $story,
             "session" => $session,
-            "estimate_fofm" => $estimateForm->createView()
+            "estimate_form" => $estimateForm->createView()
         );
     }
 
@@ -213,26 +181,20 @@ class StoryController extends Controller
      */
     public function gameoverAction(Request $request, $id, Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
-        $estimateForm = $this->createForm(new StorySetEstimateType(), $entity);
+        $story = $this->getStory($id);
+        $estimateForm = $this->createForm(new StorySetEstimateType(), $story);
         $estimateForm->bind($request);
 
         if ($estimateForm->isValid()) {
-            $em->persist($entity);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($story);
             $em->flush();
 
             return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'story'      => $story,
             'edit_form'   => $estimateForm->createView()
         );
     }

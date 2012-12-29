@@ -80,8 +80,8 @@
         {% if session.getOwnedBy() == app.user %}
         <hr>
         <div>
-            <form action="{{ path('poker_session_story_gameover', { 'id': story.id, 'session_id': session.id }) }}" method="post" {{ form_enctype(estimate_fofm) }}>
-                {{ form_widget(estimate_fofm) }}
+            <form action="{{ path('poker_session_story_gameover', { 'id': story.id, 'session_id': session.id }) }}" method="post" {{ form_enctype(estimate_form) }}>
+                {{ form_widget(estimate_form) }}
                 <p>
                     <button type="submit" class="btn btn-primary">Game Over</button>
                 </p>
