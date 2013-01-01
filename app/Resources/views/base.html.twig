@@ -32,9 +32,8 @@
                         <a class="brand" href="{{ path('application_site_site_index') }}">EasyAgile</a>
                         <div class="nav-collapse collapse">
                             {{ knp_menu_render('ApplicationSiteBundle:Builder:mainMenu', {'currentClass': 'active'}) }}
-                            <ul class="nav pull-right">
-                                {% include '::userbar.html.twig' %}
-                            </ul>
+                            {% include '::userbar.html.twig' %}
+
 
                         </div><!--/.nav-collapse -->
                     </div>
