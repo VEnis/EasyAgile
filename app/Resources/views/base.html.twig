@@ -5,7 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}EasyAgile{% endblock %}</title>
         {% block stylesheets %}
-            {% stylesheets 'bootstrap/css/bootstrap.css' filter='cssrewrite' %}
+            {% stylesheets
+                'bootstrap/css/bootstrap.css'
+                'pnotify/jquery.pnotify.default.css'
+                filter='cssrewrite' %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
@@ -14,10 +17,12 @@
             {% javascripts
             'js/jquery-1.8.3.js'
             'bootstrap/js/bootstrap.js'
+            'pnotify/jquery.pnotify.min.js'
             %}
             <script type="text/javascript" src="{{ asset_url }}"></script>
             {% endjavascripts %}
         {% endblock %}
+        {% include '::flash.html.twig' %}
     </head>
     <body style="padding-top: 50px;">
         {% block fullbody %}

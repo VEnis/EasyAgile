@@ -1,0 +1,13 @@
+<script type="text/javascript">
+    $.pnotify.defaults.history = false;
+    $(function(){
+        {% for key, message in app.session.getFlashes() %}
+        {% if key == 'fos_user_success' %}
+        $.pnotify({
+            text: '{{ message|trans({}, 'FOSUserBundle') }}',
+            type: 'success'
+        });
+        {% endif %}
+        {% endfor %}
+    });
+</script>
