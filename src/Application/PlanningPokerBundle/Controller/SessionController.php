@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use JMS\SecurityExtraBundle\Annotation\SecureParam;
 use Application\PlanningPokerBundle\Entity\Session;
 use Application\PlanningPokerBundle\Form\SessionType;
 
@@ -14,6 +16,9 @@ use JMS\SecurityExtraBundle\Annotation\PreAuthorize;
 use Application\PlanningPokerBundle\Form\SessionInvitePeopleType;
 use Application\PlanningPokerBundle\Service\Jira;
 use Application\PlanningPokerBundle\Entity\Story;
+use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
+use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 
 /**
  * Session controller.
@@ -42,19 +47,13 @@ class SessionController extends Controller
      *
      * @Route("/{id}/show", name="poker_session_show")
      * @Template()
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="VIEW")
      */
-    public function showAction($id)
+    public function showAction(Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
         return array(
-            'entity'      => $entity
+            'entity' => $session
         );
     }
 
@@ -67,11 +66,10 @@ class SessionController extends Controller
     public function newAction()
     {
         $entity = new Session();
-        $form   = $this->createForm(new SessionType(), $entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form'   => $this->createForm(new SessionType(), $entity)->createView(),
         );
     }
 
@@ -95,6 +93,20 @@ class SessionController extends Controller
             $em->persist($entity);
             $em->flush();
 
+            // Creating ACL
+            $aclProvider = $this->get("security.acl.provider");
+            $objectIdentity = ObjectIdentity::fromDomainObject($entity);
+            $acl = $aclProvider->createAcl($objectIdentity);
+
+            // Retrieving security identity of current user
+            $securityContext = $this->get("security.context");
+            $user = $securityContext->getToken()->getUser();
+            $securityIdentity = UserSecurityIdentity::fromAccount($user);
+
+            // Granting owner access
+            $acl->insertObjectAce($securityIdentity, MaskBuilder::MASK_OWNER);
+            $aclProvider->updateAcl($acl);
+
             return $this->redirect($this->generateUrl('poker_session_show', array('id' => $entity->getId())));
         }
 
@@ -108,23 +120,15 @@ class SessionController extends Controller
      * Displays a form to edit an existing Session entity.
      *
      * @Route("/{id}/edit", name="poker_session_edit")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
      * @Template()
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function editAction($id)
+    public function editAction(Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
-        $editForm = $this->createForm(new SessionType(), $entity);
-
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView()
+            'entity'      => $session,
+            'edit_form'   => $this->createForm(new SessionType(), $session)->createView()
         );
     }
 
@@ -134,29 +138,24 @@ class SessionController extends Controller
      * @Route("/{id}/update", name="poker_session_update")
      * @Method("POST")
      * @Template("ApplicationPlanningPokerBundle:Session:edit.html.twig")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
-        $editForm = $this->createForm(new SessionType(), $entity);
+        $editForm = $this->createForm(new SessionType(), $session);
         $editForm->bind($request);
 
         if ($editForm->isValid()) {
-            $em->persist($entity);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($session);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $session,
             'edit_form'   => $editForm->createView()
         );
     }
@@ -166,17 +165,13 @@ class SessionController extends Controller
      *
      * @Route("/{id}/delete", name="poker_session_delete")
      * @Method("GET")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Session $session)
     {
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
-        $em->remove($entity);
+        $em->remove($session);
         $em->flush();
 
         return $this->redirect($this->generateUrl('poker_session'));
@@ -186,23 +181,15 @@ class SessionController extends Controller
      * Invites peoples to session
      *
      * @Route("/{id}/invite", name="poker_session_invite")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="EDIT")
      * @Template()
      */
-    public function inviteAction(Request $request, $id)
+    public function inviteAction(Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
-        $inviteForm = $this->createForm(new SessionInvitePeopleType(), $entity);
-
         return array(
-            'entity'      => $entity,
-            'invite_form'   => $inviteForm->createView()
+            'entity'        => $session,
+            'invite_form'   => $this->createForm(new SessionInvitePeopleType(), $session)->createView()
         );
     }
 
@@ -212,29 +199,24 @@ class SessionController extends Controller
      * @Route("/{id}/invite-process", name="poker_session_invite_process")
      * @Method("POST")
      * @Template("ApplicationPlanningPokerBundle:Session:invite.html.twig")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function inviteProcessAction(Request $request, $id)
+    public function inviteProcessAction(Request $request, Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
-        $inviteForm = $this->createForm(new SessionInvitePeopleType(), $entity);
+        $inviteForm = $this->createForm(new SessionInvitePeopleType(), $session);
         $inviteForm->bind($request);
 
         if ($inviteForm->isValid()) {
-            $em->persist($entity);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($session);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'entity'        => $session,
             'invite_form'   => $inviteForm->createView()
         );
     }
@@ -244,20 +226,14 @@ class SessionController extends Controller
      *
      * @Route("/{id}/import/jira", name="poker_session_import_jira")
      * @Template()
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function importJiraAction(Request $request, $id)
+    public function importJiraAction(Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
         return array(
-            'entity'      => $entity,
-            'form'   => $this->createImportJiraForm()->createView()
+            'entity'    => $session,
+            'form'      => $this->createImportJiraForm()->createView()
         );
     }
 
@@ -267,24 +243,18 @@ class SessionController extends Controller
      * @Route("/{id}/import/jira-process", name="poker_session_import_jira_process")
      * @Method("POST")
      * @Template("ApplicationPlanningPokerBundle:Session:importJira.html.twig")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function importJiraProcessAction(Request $request, $id)
+    public function importJiraProcessAction(Request $request, Session $session)
     {
         //project%20%3D%20APPLINK%20AND%20Release%20%3D%20"R6.0.0"
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
         $form = $this->createImportJiraForm();
         $form->bind($request);
 
         if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
             $data = $form->getData();
-            $jql = $data["jql"];
 
             $jira = new Jira();
             $jira_stories = $jira->getTasksByJQL($data["jira_login"], $data["jira_password"], $data["jql"]);
@@ -298,19 +268,19 @@ class SessionController extends Controller
                 $story->setTitle(sprintf("[%s]: %s", $key, $title));
                 $story->setEstimate(0);
                 $story->setCustomFields(array("jira_key" => $key));
-                $story->setSession($entity);
+                $story->setSession($session);
 
                 $em->persist($story);
             }
 
-            $em->persist($entity);
+            $em->persist($session);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $session,
             'form'   => $form->createView()
         );
     }
@@ -320,19 +290,13 @@ class SessionController extends Controller
      *
      * @Route("/{id}/export/jira-all", name="poker_session_export_jira_all")
      * @Template()
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function exportAllJiraAction(Request $request, $id)
+    public function exportAllJiraAction(Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
         return array(
-            'entity'      => $entity,
+            'entity' => $session,
             'form'   => $this->createExportJiraAllForm()->createView()
         );
     }
@@ -343,28 +307,24 @@ class SessionController extends Controller
      * @Route("/{id}/export/jira-all-process", name="poker_session_export_jira_all_process")
      * @Method("POST")
      * @Template("ApplicationPlanningPokerBundle:Session:exportAllJira.html.twig")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function exportAllJiraProcessAction(Request $request, $id)
+    public function exportAllJiraProcessAction(Request $request, Session $session)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
         $form = $this->createExportJiraAllForm();
         $form->bind($request);
 
         if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
             $data = $form->getData();
             $jira = new Jira();
-            $jira->updateTasksEstimates($data["jira_login"], $data["jira_password"], $entity->getStories());
-            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+            $jira->updateTasksEstimates($data["jira_login"], $data["jira_password"], $session->getStories());
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $session,
             'form'   => $form->createView()
         );
     }
@@ -374,26 +334,16 @@ class SessionController extends Controller
      *
      * @Route("/{id}/export/jira/{story_id}", name="poker_session_export_jira")
      * @Template()
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @ParamConverter("story", class="ApplicationPlanningPokerBundle:Story", options={"id" = "story_id"})
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function exportJiraAction(Request $request, $id, $story_id)
+    public function exportJiraAction(Session $session, Story $story)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-        $story = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($story_id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
-        if (!$story) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
         return array(
-            'entity'      => $entity,
-            'story'      => $story,
-            'form'   => $this->createExportJiraAllForm()->createView()
+            'entity'    => $session,
+            'story'     => $story,
+            'form'      => $this->createExportJiraAllForm()->createView()
         );
     }
 
@@ -403,21 +353,12 @@ class SessionController extends Controller
      * @Route("/{id}/export/jira-process/{story_id}", name="poker_session_export_jira_process")
      * @Method("POST")
      * @Template("ApplicationPlanningPokerBundle:Session:exportJira.html.twig")
+     * @ParamConverter("session", class="ApplicationPlanningPokerBundle:Session")
+     * @ParamConverter("story", class="ApplicationPlanningPokerBundle:Story", options={"id" = "story_id"})
+     * @SecureParam(name="session", permissions="EDIT")
      */
-    public function exportJiraProcessAction(Request $request, $id, $story_id)
+    public function exportJiraProcessAction(Request $request, Session $session, Story $story)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('ApplicationPlanningPokerBundle:Session')->find($id);
-        $story = $em->getRepository('ApplicationPlanningPokerBundle:Story')->find($story_id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Session entity.');
-        }
-
-        if (!$story) {
-            throw $this->createNotFoundException('Unable to find Story entity.');
-        }
-
         $form = $this->createExportJiraAllForm();
         $form->bind($request);
 
@@ -425,11 +366,11 @@ class SessionController extends Controller
             $data = $form->getData();
             $jira = new Jira();
             $jira->updateTasksEstimates($data["jira_login"], $data["jira_password"], array($story));
-            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $id)));
+            return $this->redirect($this->generateUrl('poker_session_show', array('id' => $session->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $session,
             'story'      => $story,
             'form'   => $form->createView()
         );
