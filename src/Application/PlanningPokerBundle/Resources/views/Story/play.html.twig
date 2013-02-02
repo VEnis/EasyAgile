@@ -100,12 +100,32 @@
     <script src="/bootstrap-ajax/bootstrap-ajax.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        function displayEstimate(estimate){
+            console.log(estimate);
+            var result;
+            switch(estimate){
+                case -1:
+                        result = "<i class='icon-glass'></i>";
+                    break;
+                case -2:
+                        result = "?";
+                    break;
+                case -3:
+                        result = "&#8734;";
+                    break;
+                default:
+                        result = estimate;
+                    break;
+            }
+            return result;
+        }
+
         function updateEstimates(data)
         {
             for(var i in data.estimates){
                 var estimate = data.estimates[i];
                 var id = "#user_estimate_"+estimate.uid;
-                $(id).text(estimate.estimate);
+                $(id).html(displayEstimate(estimate.estimate));
             }
 
             calculateMeanValues(data.estimates);
