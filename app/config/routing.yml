@@ -60,3 +60,15 @@ fos_user_change_password:
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /api/doc
+
+
+# API
+api_users:
+    type: rest
+    prefix: /api
+    resource: Application\ApiBundle\Controller\UsersController
+
+api_Sessions:
+    type: rest
+    prefix: /api
+    resource: Application\ApiBundle\Controller\SessionsController
