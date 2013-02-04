@@ -1,0 +1,2 @@
+Sonata\UserBundle\Entity\BaseUser:
+  exclusion_policy: ALL

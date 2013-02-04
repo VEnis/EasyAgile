@@ -1,0 +1,27 @@
+Application\PlanningPokerBundle\Entity\Session:
+  exclusion_policy: ALL
+  properties:
+    id:
+      expose: true
+      groups: [full_session]
+    title:
+      expose: true
+      groups: [full_session]
+    created_at:
+      expose: true
+      groups: [full_session]
+    updated_at:
+      expose: true
+      groups: [full_session]
+    completed:
+      expose: true
+      groups: [full_session]
+    stories:
+      expose: true
+      groups: [full_session]
+    peoples:
+      expose: true
+      groups: [full_session]
+    ownedBy:
+      expose: true
+      groups: [full_session]
