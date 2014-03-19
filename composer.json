@@ -62,7 +62,7 @@
     },
     "config": {
         "bin-dir": "bin",
-        "github-protocols": ["http"]
+        "github-protocols": ["https"]
     },
     "minimum-stability": "dev",
     "extra": {
